@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+
+model User {
+  id            String          @id @default(uuid())
+  name          String
+  email         String          @unique
+  passwordHash  String
+  role          Role            @default(USER)
+
+  knowledgeItems KnowledgeItem[]
+  conversations  Conversation[]
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model KnowledgeItem {
+  id           String          @id @default(uuid())
+  title        String
+  content      String
+  fileUrl      String?
+
+  userId       String
+  user         User            @relation(fields: [userId], references: [id])
+
+  tags         KnowledgeTag[]
+  conversations Conversation[]
+
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([title])
+}
+
+model Tag {
+  id        String          @id @default(uuid())
+  name      String          @unique
+  items     KnowledgeTag[]
+}
+
+model KnowledgeTag {
+  knowledgeItemId String
+  knowledgeItem   KnowledgeItem @relation(fields: [knowledgeItemId], references: [id], onDelete: Cascade)
+
+  tagId String
+  tag   Tag @relation(fields: [tagId], references: [id])
+
+  @@id([knowledgeItemId, tagId])
+}
+
+model Conversation {
+  id              String @id @default(uuid())
+
+  userId          String
+  knowledgeItemId String
+
+  question        String @db.Text
+  answer          String @db.Text
+
+  tokensUsed      Int?
+  modelUsed       String?
+
+  user            User @relation(fields: [userId], references: [id])
+
+  knowledgeItem   KnowledgeItem @relation(fields: [knowledgeItemId],references: [id],onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
