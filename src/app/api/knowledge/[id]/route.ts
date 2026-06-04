@@ -66,7 +66,7 @@ export async function PUT(
     });
 
     await delay(3000);
-    return successResponse(updated, "Knowledge updated");
+    return successResponse(updated, "Knowledge item updated");
   } catch (error: any) {
     return errorResponse(error.message, 400);
   }
@@ -95,7 +95,7 @@ export async function DELETE(
     await deleteKnowledgeItem(id, user.id);
 
     await delay(3000);
-    return successResponse(null, "Knowledge deleted");
+    return successResponse(null, "Knowledge item deleted");
   } catch (error: any) {
     return errorResponse(error.message, 400);
   }

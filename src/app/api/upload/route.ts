@@ -1,8 +1,5 @@
 import cloudinary from "@/lib/cloudinary";
-import {
-  successResponse,
-  errorResponse,
-} from "@/utils/apiResponse";
+import { successResponse, errorResponse } from "@/utils/apiResponse";
 
 export async function POST(req: Request) {
   try {
@@ -18,22 +15,19 @@ export async function POST(req: Request) {
 
     const buffer = Buffer.from(bytes);
 
-    const result = await new Promise<any>(
-      (resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream(
-            {
-              resource_type: "auto",
-            },
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result);
-            }
-          )
-          .end(buffer);
-      }
-    );
-
+    const result = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream(
+          {
+            resource_type: "auto",
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          },
+        )
+        .end(buffer);
+    });
     return successResponse(result);
   } catch (error: any) {
     return errorResponse(error.message, 400);

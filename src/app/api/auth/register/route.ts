@@ -19,6 +19,9 @@ export async function POST(req: Request) {
 
     return successResponse(user, "Registration successful", 201);
   } catch (error: any) {
-    return errorResponse(error.message, 400);
+    return errorResponse(
+    error?.issues?.[0]?.message || error.message,
+    400
+  );
   }
 }

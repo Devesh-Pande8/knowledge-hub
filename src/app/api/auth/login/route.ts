@@ -22,6 +22,9 @@ export async function POST(req: Request) {
       "Login successful"
     );
   } catch (error: any) {
-    return errorResponse(error.message, 400);
-  }
+   return errorResponse(
+    error?.issues?.[0]?.message || error.message,
+    400
+  );
+}
 }
