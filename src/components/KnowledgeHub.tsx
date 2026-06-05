@@ -119,6 +119,7 @@ export default function KnowledgeHub() {
   const [editId, setEditId] = useState<string | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     const savedToken = localStorage.getItem(TOKEN_STORAGE_KEY);
@@ -359,11 +360,14 @@ export default function KnowledgeHub() {
     if (!deleteId) return;
 
     try {
+      setDeleteLoading(true);
+
       const response = await apiCall(`/api/knowledge/${deleteId}`, {
         method: "DELETE",
       });
 
       const result = (await response.json()) as ApiResponse<null>;
+
       setFeedback(result.message);
 
       await fetchKnowledge();
@@ -374,6 +378,7 @@ export default function KnowledgeHub() {
     } catch (error: any) {
       setFeedback(error?.message || "Unable to delete item");
     } finally {
+      setDeleteLoading(false);
       setDeleteOpen(false);
       setDeleteId(null);
     }
@@ -568,8 +573,13 @@ export default function KnowledgeHub() {
 
         <DialogActions>
           <Button onClick={cancelDelete}>Cancel</Button>
-          <Button onClick={confirmDelete} color="error" variant="contained">
-            Delete
+          <Button
+            onClick={confirmDelete}
+            color="error"
+            variant="contained"
+            disabled={deleteLoading}
+          >
+            {deleteLoading ? "Deleting..." : "Delete"}
           </Button>
         </DialogActions>
       </Dialog>

@@ -31,11 +31,6 @@ This project is a full-stack Knowledge Hub built with Next.js App Router. It pro
 - `Conversation`
   - `id`, `userId`, `knowledgeItemId`, `question`, `answer`, `tokensUsed`, `modelUsed`
 
-### Visibility
-
-- `PRIVATE` items are only visible to the owner
-- `TEAM` items are visible to authenticated users across the team
-
 ## Backend Framework Selection
 
 - Next.js App Router for server-side API routes and frontend rendering
